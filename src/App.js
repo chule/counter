@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { auth, database, googleAuthProvider } from './firebase'
+import { auth, googleAuthProvider } from './firebase'
 import { todaysDate } from './utils'
 import ListOfExercises from './components/ListOfExercises'
+import { changeValue, changeDataAfterLogin, checkServerRepetitions } from "./utils/api"
 
 // todo
 // add timer for total exercise
@@ -17,39 +18,42 @@ class App extends Component {
   }
 
   addOne = () => {
-    this.setState(oldState => ({
-      counter: oldState.counter + 1
-    }))
-
-    if (this.state.user) {
-      database.ref(`users/${this.state.user.uid}/exercises/${todaysDate}`)
-        .set({ repetitions: this.state.counter + 1, time: Date.now() });
-    }
-
+    this.setState(oldState => {
+      let value = oldState.counter + 1
+      if (this.state.user) {
+        let uid = this.state.user.uid
+        changeValue({ uid, value })
+      }
+      return {
+        counter: value
+      }
+    })
   }
 
   removeOne = () => {
-    this.setState(oldState => ({
-      counter: oldState.counter - 1
-    }))
-
-    if (this.state.user) {
-      database.ref(`users/${this.state.user.uid}/exercises/${todaysDate}`)
-        .set({ repetitions: this.state.counter - 1, time: Date.now() });
-    }
-
+    this.setState(oldState => {
+      let value = oldState.counter - 1
+      if (this.state.user) {
+        let uid = this.state.user.uid
+        changeValue({ uid, value })
+      }
+      return {
+        counter: value
+      }
+    })
   }
 
   reset = () => {
-    this.setState(() => ({
-      counter: 0
-    }))
-
-    if (this.state.user) {
-      database.ref(`users/${this.state.user.uid}/exercises/${todaysDate}`)
-        .set({ repetitions: 0, time: Date.now() });
-    }
-
+    this.setState(() => {
+      let value = 0
+      if (this.state.user) {
+        let uid = this.state.user.uid
+        changeValue({ uid, value })
+      }
+      return {
+        counter: value
+      }
+    })
   }
 
   signOut = (e) => {
@@ -74,53 +78,21 @@ class App extends Component {
 
     auth.signInWithPopup(googleAuthProvider)
       .then(result => {
-        console.log(result)
+
         if (result.user) {
           this.setState(() => ({
             user: result.user
           }))
         }
 
-        this.loginStuff()
+        changeDataAfterLogin(result.user, this.state.counter)
+        let cb = (value) => this.setState({ counter: value })
+        checkServerRepetitions(result.user, cb)
+
       })
 
   }
 
-
-  loginStuff = () => {
-
-    auth.onAuthStateChanged((user) => {
-
-      if (user) {
-
-        database.ref(`users/${user.uid}`).once("value", snapshot => {
-          const email = snapshot.child("email").exists();
-          if (email) { // if use exist
-
-            if (snapshot.child(`exercises/${todaysDate}`).exists()) {
-              let serverRepetitions = snapshot.child(`exercises/${todaysDate}/repetitions`).val();
-
-              this.setState({ counter: serverRepetitions });
-
-            } else {
-              database.ref(`users/${user.uid}/exercises/${todaysDate}`)
-                .set({ repetitions: this.state.counter, time: Date.now() });
-            }
-
-          } else { // add user to database
-            database.ref('users')
-              .child(user.uid)
-              .set({ displayName: user.displayName, email: user.email, uid: user.uid, photoURL: user.photoURL });
-
-            database.ref(`users/${user.uid}/exercises/${todaysDate}`)
-              .set({ repetitions: this.state.counter, time: Date.now() });
-
-          }
-        });
-      }
-
-    });
-  }
 
 
   render() {
