@@ -6,6 +6,13 @@ export const changeValue = ({ uid, value }) => {
         .set({ repetitions: value, time: Date.now() });
 }
 
+// export const listOfExercises = (uid) => {
+
+//         return database.ref(`users/${uid}/exercises/`)
+//             .once("value")
+
+// }
+
 export const checkServerRepetitions = (user, cb) => {
     return database.ref(`users/${user.uid}`).once("value", snapshot => {
         const email = snapshot.child("email").exists()
@@ -13,7 +20,9 @@ export const checkServerRepetitions = (user, cb) => {
 
             if (snapshot.child(`exercises/${todaysDate}`).exists()) {
                 let value = snapshot.child(`exercises/${todaysDate}/repetitions`).val()
-                cb(value)
+                let list = snapshot.child(`exercises/`).val()
+                //listOfExercises(result.user.uid).then(snapshot => console.log(snapshot.val()) )
+                cb(value, list)
             }
 
         }

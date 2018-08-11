@@ -14,7 +14,8 @@ class App extends Component {
 
   state = {
     counter: 0,
-    user: null
+    user: null,
+    listOfExercises: {}
   }
 
   addOne = () => {
@@ -80,14 +81,17 @@ class App extends Component {
       .then(result => {
 
         if (result.user) {
-          this.setState(() => ({
-            user: result.user
-          }))
+          // this.setState(() => ({
+          //   user: result.user
+          // }))
+          changeDataAfterLogin(result.user, this.state.counter)
+
+          let cb = (value, list) => this.setState({ counter: value, user: result.user, listOfExercises: list })
+          checkServerRepetitions(result.user, cb)
+
         }
 
-        changeDataAfterLogin(result.user, this.state.counter)
-        let cb = (value) => this.setState({ counter: value })
-        checkServerRepetitions(result.user, cb)
+
 
       })
 
@@ -96,7 +100,7 @@ class App extends Component {
 
 
   render() {
-    const { user } = this.state;
+    const { user, listOfExercises } = this.state;
 
     return (
       <div className="App">
@@ -120,10 +124,16 @@ class App extends Component {
 
         <button className="Add-button" onClick={this.addOne}>Add one</button>
         <br />
-        <button onClick={this.removeOne}>Remove one</button>
-        <button onClick={this.reset}>Reset</button>
+        <div>
+          <button onClick={this.removeOne}>Remove one</button>
+          <button onClick={this.reset}>Reset</button>
+        </div>
 
-        <ListOfExercises />
+        <div style={{maxWidth: 400, margin: "0 auto"}}>
+          {user && <ListOfExercises listOfExercises={listOfExercises} />}
+        </div>
+
+
 
       </div>
     );
