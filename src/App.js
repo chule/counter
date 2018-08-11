@@ -3,6 +3,11 @@ import logo from './logo.svg'
 import './App.css'
 import { auth, database, googleAuthProvider } from './firebase'
 import { todaysDate } from './utils'
+import ListOfExercises from './components/ListOfExercises'
+
+// todo
+// add timer for total exercise
+// show list of exercises by day
 
 class App extends Component {
 
@@ -145,6 +150,8 @@ class App extends Component {
         <br />
         <button onClick={this.removeOne}>Remove one</button>
         <button onClick={this.reset}>Reset</button>
+
+        <ListOfExercises />
 
       </div>
     );
