@@ -5,15 +5,21 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import { secondsToTime } from '../utils'
+
 export default class ListOfExercises extends Component {
     render() {
-        //console.log()
+        
         const list = this.props.listOfExercises
-        return (<Table className="table">
+
+        console.log(list)
+        return (<Table>
             <TableHead>
                 <TableRow>
                     <TableCell>Date</TableCell>
+                    <TableCell numeric>Time</TableCell>
                     <TableCell numeric>Value</TableCell>
+                    
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -23,6 +29,7 @@ export default class ListOfExercises extends Component {
                             <TableCell component="th" scope="row">
                                 {date}
                             </TableCell>
+                            <TableCell numeric>{secondsToTime(list[date].time)}</TableCell>
                             <TableCell numeric>{list[date].repetitions}</TableCell>
 
                         </TableRow>

@@ -1,9 +1,17 @@
 import { todaysDate } from './index.js'
 import { database } from '../firebase'
 
-export const changeValue = ({ uid, value }) => {
+export const changeValue = ({ uid, value, time, cb }) => {
     database.ref(`users/${uid}/exercises/${todaysDate}`)
-        .set({ repetitions: value, time: Date.now() });
+        .set({ repetitions: value, time });
+
+        database.ref(`users/${uid}`).once("value", snapshot => {
+
+                    let list = snapshot.child(`exercises/`).val()
+                    cb(list)
+                
+        })
+
 }
 
 // export const listOfExercises = (uid) => {
@@ -21,8 +29,9 @@ export const checkServerRepetitions = (user, cb) => {
             if (snapshot.child(`exercises/${todaysDate}`).exists()) {
                 let value = snapshot.child(`exercises/${todaysDate}/repetitions`).val()
                 let list = snapshot.child(`exercises/`).val()
+                let time = snapshot.child(`exercises/${todaysDate}/time`).val()
                 //listOfExercises(result.user.uid).then(snapshot => console.log(snapshot.val()) )
-                cb(value, list)
+                cb(value, list, time)
             }
 
         }

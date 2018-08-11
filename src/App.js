@@ -4,6 +4,7 @@ import './App.css'
 import { auth, googleAuthProvider } from './firebase'
 import { todaysDate } from './utils'
 import ListOfExercises from './components/ListOfExercises'
+import Timer from './components/Timer'
 import { changeValue, changeDataAfterLogin, checkServerRepetitions } from "./utils/api"
 
 // todo
@@ -15,7 +16,10 @@ class App extends Component {
   state = {
     counter: 0,
     user: null,
-    listOfExercises: {}
+    listOfExercises: {},
+    timerStarted: false,
+    timer: 0,
+    intervalId: null
   }
 
   addOne = () => {
@@ -23,7 +27,10 @@ class App extends Component {
       let value = oldState.counter + 1
       if (this.state.user) {
         let uid = this.state.user.uid
-        changeValue({ uid, value })
+        let cb = (list) => this.setState(() =>
+          ({ listOfExercises: list })
+        )
+        changeValue({ uid, value, time: this.state.timer, cb })
       }
       return {
         counter: value
@@ -36,7 +43,10 @@ class App extends Component {
       let value = oldState.counter - 1
       if (this.state.user) {
         let uid = this.state.user.uid
-        changeValue({ uid, value })
+        let cb = (list) => this.setState(() =>
+          ({ listOfExercises: list })
+        )
+        changeValue({ uid, value, time: this.state.timer, cb })
       }
       return {
         counter: value
@@ -61,13 +71,18 @@ class App extends Component {
     if (e) {
       e.preventDefault();
     }
+    clearInterval(this.state.intervalId)
+
     auth.signOut()
       .then(() => {
         this.setState(() => ({
-          user: null
+          user: null,
+          timerStarted: false,
+          timer: 0
         }))
       }).then(() => {
         this.reset()
+        //this.startStopTimer()
       })
 
   }
@@ -76,6 +91,7 @@ class App extends Component {
     if (e) {
       e.preventDefault()
     }
+    clearInterval(this.state.intervalId)
 
     auth.signInWithPopup(googleAuthProvider)
       .then(result => {
@@ -86,7 +102,9 @@ class App extends Component {
           // }))
           changeDataAfterLogin(result.user, this.state.counter)
 
-          let cb = (value, list) => this.setState({ counter: value, user: result.user, listOfExercises: list })
+          let cb = (value, list, time) => this.setState(() =>
+            ({ counter: value, user: result.user, listOfExercises: list, timerStarted: false, timer: time })
+          )
           checkServerRepetitions(result.user, cb)
 
         }
@@ -94,7 +112,31 @@ class App extends Component {
 
 
       })
+      .then(() => {
+        //this.startStopTimer()
+      })
 
+  }
+
+  startStopTimer = () => {
+
+    if (this.state.timerStarted) {
+
+      this.setState(oldState => ({
+        ...oldState,
+        timerStarted: false
+      }))
+      clearInterval(this.state.intervalId)
+    } else {
+      let timer = setInterval(() => {
+        this.setState(oldState => ({
+          ...oldState,
+          timerStarted: true,
+          timer: oldState.timer + 1,
+          intervalId: timer
+        }))
+      }, 1000)
+    }
   }
 
 
@@ -119,9 +161,9 @@ class App extends Component {
           }
         </header>
         <p className="App-intro">
-          {this.state.counter}
+          Current repetitions: {this.state.counter}
         </p>
-
+        <Timer startStopTimer={this.startStopTimer} time={this.state.timer} />
         <button className="Add-button" onClick={this.addOne}>Add one</button>
         <br />
         <div>
@@ -129,7 +171,7 @@ class App extends Component {
           <button onClick={this.reset}>Reset</button>
         </div>
 
-        <div style={{maxWidth: 400, margin: "0 auto"}}>
+        <div style={{ maxWidth: 400, margin: "0 auto" }}>
           {user && <ListOfExercises listOfExercises={listOfExercises} />}
         </div>
 
