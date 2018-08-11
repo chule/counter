@@ -1,16 +1,16 @@
 import firebase from 'firebase/app'
 import 'firebase/database'
 import 'firebase/auth'
+import config from "./config.js"
 
-
-const config = {
-    apiKey: "AIzaSyBOkmm4DOULm2wKReyuM0cIlITGuRt9wP8",
-    authDomain: "cou-nter.firebaseapp.com",
-    databaseURL: "https://cou-nter.firebaseio.com",
-    projectId: "cou-nter",
-    storageBucket: "cou-nter.appspot.com",
-    messagingSenderId: "393777055254"
-};
+// const config = {
+//     apiKey: "",
+//     authDomain: "",
+//     databaseURL: "",
+//     projectId: "",
+//     storageBucket: "",
+//     messagingSenderId: ""
+// };
 
 firebase.initializeApp(config);
 
