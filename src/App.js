@@ -95,25 +95,21 @@ class App extends Component {
 
     auth.signInWithPopup(googleAuthProvider)
       .then(result => {
-
-        if (result.user) {
-          // this.setState(() => ({
-          //   user: result.user
-          // }))
-          changeDataAfterLogin(result.user, this.state.counter)
-
-          let cb = (value, list, time) => this.setState(() =>
-            ({ counter: value, user: result.user, listOfExercises: list, timerStarted: false, timer: time })
-          )
-          checkServerRepetitions(result.user, cb)
-
-        }
-
-
-
+        return result
       })
       .then(() => {
-        //this.startStopTimer()
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+
+            changeDataAfterLogin(user, this.state.counter)
+  
+            let cb = (value, list, time) => this.setState(() =>
+              ({ counter: value, user: user, listOfExercises: list, timerStarted: false, timer: time })
+            )
+            checkServerRepetitions(user, cb)
+  
+          }
+        })
       })
 
   }
