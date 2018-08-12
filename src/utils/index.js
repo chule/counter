@@ -16,11 +16,11 @@ export const secondsToTime = (time) => {
         seconds = 0;
 
     if (time > 3600) {
-        hours = Math.round(time / 3600)
+        hours = Math.floor(time / 3600)
         time = time % 3600
     }
     if (time > 60) {
-        minutes = Math.round(time / 60)
+        minutes = Math.floor(time / 60)
         seconds = time % 60
     } else {
         seconds = time
