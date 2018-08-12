@@ -3,7 +3,7 @@ import { database } from '../firebase'
 
 export const changeValue = ({ uid, value, time, cb }) => {
     database.ref(`users/${uid}/exercises/${todaysDate}`)
-        .set({ repetitions: value, time });
+        .set({ repetitions: value, time, referenceTime: Date.now() });
 
         database.ref(`users/${uid}`).once("value", snapshot => {
 
@@ -25,12 +25,14 @@ export const checkServerRepetitions = (user, cb) => {
     return database.ref(`users/${user.uid}`).once("value", snapshot => {
         const email = snapshot.child("email").exists()
         if (email) { // if user exist
+
             let list = snapshot.child(`exercises/`).val()
+
             if (snapshot.child(`exercises/${todaysDate}`).exists()) {
 
                 let value = snapshot.child(`exercises/${todaysDate}/repetitions`).val()
                 let time = snapshot.child(`exercises/${todaysDate}/time`).val()
-                
+
                 //listOfExercises(result.user.uid).then(snapshot => console.log(snapshot.val()) )
                 cb(value, list, time)
             } else {

@@ -23,7 +23,7 @@ export default class ListOfExercises extends Component {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {Object.keys(list).map(date => {
+                {Object.keys(list).sort((a,b) => list[b].referenceTime - list[a].referenceTime).map(date => {
                     return (
                         <TableRow key={date}>
                             <TableCell component="th" scope="row">
