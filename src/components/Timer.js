@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 import { secondsToTime } from '../utils'
+import Button from '@material-ui/core/Button'
+import { smallButton } from '../utils/muiTheme'
 
 export default class Timer extends Component {
     render() {
@@ -7,7 +9,9 @@ export default class Timer extends Component {
             <div>
                 Current time: {secondsToTime(this.props.time)}
             </div>
-            <button onClick={this.props.startStopTimer}> start/stop </button>
+            <Button variant="contained" size="small" color="primary" style={smallButton} onClick={this.props.startStopTimer}> 
+            start timer / stop timer 
+            </Button>
         </div>)
     }
 }

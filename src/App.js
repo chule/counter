@@ -5,11 +5,10 @@ import { auth, googleAuthProvider } from './firebase'
 import { todaysDate } from './utils'
 import ListOfExercises from './components/ListOfExercises'
 import Timer from './components/Timer'
+import Button from '@material-ui/core/Button'
 import { changeValue, changeDataAfterLogin, checkServerRepetitions } from "./utils/api"
-
-// todo
-// add timer for total exercise
-// show list of exercises by day
+import theme, { bigButton, smallButton } from './utils/muiTheme'
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
 class App extends Component {
 
@@ -102,12 +101,12 @@ class App extends Component {
           if (user) {
 
             changeDataAfterLogin(user, this.state.counter)
-  
+
             let cb = (value, list, time) => this.setState(() =>
               ({ counter: value, user: user, listOfExercises: list, timerStarted: false, timer: time })
             )
             checkServerRepetitions(user, cb)
-  
+
           }
         })
       })
@@ -141,39 +140,48 @@ class App extends Component {
     const { user, listOfExercises } = this.state;
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Counter for {todaysDate}</h1>
-          {
-            user
-              ? <button onClick={this.signOut}>
-                {"Sign Out " + user.displayName.split(" ")[0]}
-              </button>
+      <MuiThemeProvider theme={theme}>
+        <div className="App">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            <h1 className="App-title">Counter for {todaysDate}</h1>
+            {
+              user
+                ? <Button  variant="contained" size="small" color="primary" style={smallButton} onClick={this.signOut}>
+                  {"Sign Out " + user.displayName}
+                </Button>
 
-              : <button onClick={this.signIn}>
-                Sign in
-              </button>
-          }
-        </header>
-        <p className="App-intro">
-          Current repetitions: {this.state.counter}
-        </p>
-        <Timer startStopTimer={this.startStopTimer} time={this.state.timer} />
-        <button className="Add-button" onClick={this.addOne}>Add one</button>
-        <br />
-        <div>
-          <button onClick={this.removeOne}>Remove one</button>
-          <button onClick={this.reset}>Reset</button>
+                : <Button  variant="contained" size="small" color="primary" style={smallButton} onClick={this.signIn}>
+                  Sign in
+              </Button>
+            }
+          </header>
+          <p className="App-intro">
+            Current repetitions: {this.state.counter}
+
+          </p>
+          <Timer startStopTimer={this.startStopTimer} time={this.state.timer} />
+
+          {/* <button className="Add-button" ></button> */}
+
+            <Button variant="contained" style={bigButton} onClick={this.addOne}>
+            Add one
+            </Button>
+
+
+          <br />
+          <div>
+            <Button variant="contained" size="small" color="primary" style={smallButton} onClick={this.removeOne}>Remove one</Button>
+
+            <Button variant="contained" size="small" color="primary" style={smallButton} onClick={this.reset}>Reset</Button>
+          </div>
+
+          <div style={{ maxWidth: 400, margin: "0 auto" }}>
+            {user && <ListOfExercises listOfExercises={listOfExercises} />}
+          </div>
+
         </div>
-
-        <div style={{ maxWidth: 400, margin: "0 auto" }}>
-          {user && <ListOfExercises listOfExercises={listOfExercises} />}
-        </div>
-
-
-
-      </div>
+      </MuiThemeProvider>
     );
   }
 }
