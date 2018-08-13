@@ -11,20 +11,9 @@ export const secondsToTime = (time) => {
         return value
     }
 
-    let hours = 0,
-        minutes = 0,
-        seconds = 0;
-
-    if (time > 3600) {
-        hours = Math.floor(time / 3600)
-        time = time % 3600
-    }
-    if (time > 60) {
-        minutes = Math.floor(time / 60)
-        seconds = time % 60
-    } else {
-        seconds = time
-    }
+    let hours = Math.floor(time / 3600)
+    let minutes = Math.floor((time / 60) % 60)
+    let seconds = time % 60
 
     return addZero(hours) + ":" + addZero(minutes) + ":" + addZero(seconds)
 } 
