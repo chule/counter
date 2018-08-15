@@ -134,7 +134,11 @@ class App extends Component {
     }
   }
 
-
+  handleKeyPress = (event) => {
+    // if(event.key === " "){
+    //   console.log("asdf" + event.key + "asdf")
+    // }
+  }
 
   render() {
     const { user, listOfExercises } = this.state;
@@ -164,7 +168,7 @@ class App extends Component {
 
           {/* <button className="Add-button" ></button> */}
 
-            <Button variant="contained" style={bigButton} onClick={this.addOne}>
+            <Button autoFocus variant="contained" style={bigButton} onClick={this.addOne} onKeyPress={this.handleKeyPress}>
             Add one
             </Button>
 
