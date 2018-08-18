@@ -7,7 +7,9 @@ import TableRow from '@material-ui/core/TableRow';
 
 import { secondsToTime } from '../utils'
 
-const gunnarStyle = { height: "10px", padding: "5px"}
+const dateStyle = { height: "10px", padding: "5px", textAlign:"left"}
+const timeStyle = { height: "10px", padding: "5px", textAlign:"center"}
+const stepsReps = { height: "10px", padding: "5px", textAlign:"right"}
 
 export default class ListOfExercises extends Component {
     render() {
@@ -17,12 +19,12 @@ export default class ListOfExercises extends Component {
         return (<Table>
             <TableHead>
                 <TableRow >
-                    <TableCell  style={gunnarStyle}>
+                    <TableCell  style={dateStyle}>
                         Date
                         </TableCell>
-                    <TableCell style={gunnarStyle}>Total Time</TableCell>
-                    <TableCell style={gunnarStyle}>Steps</TableCell>
-                    <TableCell style={gunnarStyle}>Reps</TableCell>
+                    <TableCell style={timeStyle}>Total Time</TableCell>
+                    <TableCell style={stepsReps}>Steps</TableCell>
+                    <TableCell style={stepsReps}>Reps</TableCell>
 
                 </TableRow>
             </TableHead>
@@ -30,12 +32,12 @@ export default class ListOfExercises extends Component {
                 {Object.keys(list).sort((a, b) => list[b].referenceTime - list[a].referenceTime).map(date => {
                     return (
                         <TableRow key={date}>
-                            <TableCell  style={gunnarStyle}>
+                            <TableCell  style={dateStyle}>
                                 {date}
                             </TableCell>
-                            <TableCell style={gunnarStyle}>{secondsToTime(list[date].time)}</TableCell>
-                            <TableCell style={gunnarStyle}>{list[date].repetitions * 24}</TableCell>
-                            <TableCell style={gunnarStyle}>{list[date].repetitions}</TableCell>
+                            <TableCell style={timeStyle}>{secondsToTime(list[date].time)}</TableCell>
+                            <TableCell style={stepsReps}>{list[date].repetitions * 24}</TableCell>
+                            <TableCell style={stepsReps}>{list[date].repetitions}</TableCell>
 
                         </TableRow>
                     );
