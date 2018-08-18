@@ -7,30 +7,35 @@ import TableRow from '@material-ui/core/TableRow';
 
 import { secondsToTime } from '../utils'
 
+const gunnarStyle = { height: "10px", padding: "5px"}
+
 export default class ListOfExercises extends Component {
     render() {
-        
+
         const list = this.props.listOfExercises
 
-        console.log(list)
         return (<Table>
             <TableHead>
-                <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell numeric>Time</TableCell>
-                    <TableCell numeric>Value</TableCell>
-                    
+                <TableRow >
+                    <TableCell  style={gunnarStyle}>
+                        Date
+                        </TableCell>
+                    <TableCell style={gunnarStyle}>Total Time</TableCell>
+                    <TableCell style={gunnarStyle}>Steps</TableCell>
+                    <TableCell style={gunnarStyle}>Reps</TableCell>
+
                 </TableRow>
             </TableHead>
             <TableBody>
-                {Object.keys(list).sort((a,b) => list[b].referenceTime - list[a].referenceTime).map(date => {
+                {Object.keys(list).sort((a, b) => list[b].referenceTime - list[a].referenceTime).map(date => {
                     return (
                         <TableRow key={date}>
-                            <TableCell component="th" scope="row">
+                            <TableCell  style={gunnarStyle}>
                                 {date}
                             </TableCell>
-                            <TableCell numeric>{secondsToTime(list[date].time)}</TableCell>
-                            <TableCell numeric>{list[date].repetitions}</TableCell>
+                            <TableCell style={gunnarStyle}>{secondsToTime(list[date].time)}</TableCell>
+                            <TableCell style={gunnarStyle}>{list[date].repetitions * 24}</TableCell>
+                            <TableCell style={gunnarStyle}>{list[date].repetitions}</TableCell>
 
                         </TableRow>
                     );
